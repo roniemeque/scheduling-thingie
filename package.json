@@ -1,0 +1,12 @@
+{
+  "name": "scheduling-thingie",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@vercel/node": "^1.8.4"
+  },
+  "dependencies": {
+    "faunadb": "^3.0.1"
+  }
+}
