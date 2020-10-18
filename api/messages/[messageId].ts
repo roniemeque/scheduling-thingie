@@ -8,43 +8,52 @@ import {
 } from "../../src/lib/fauna";
 
 export default async (req: NowRequest, res: NowResponse) => {
-  if (handleCors(req, res)) return;
+  try {
+    if (handleCors(req, res)) return;
 
-  const { method, query, body } = req;
+    const { method, query, body } = req;
 
-  const { messageId } = query;
+    const { messageId } = query;
 
-  if (method === "GET") {
-    const item = await getItemById("messages", messageId as string);
+    if (method === "GET") {
+      const item = await getItemById("messages", messageId as string);
 
-    if (!item) return res.status(500).json({ message: "Something went wrong" });
+      if (!item)
+        return res.status(500).json({ message: "Something went wrong" });
 
-    return res.status(200).json({ item });
+      return res.status(200).json({ item });
+    }
+
+    if (method === "DELETE") {
+      const item = await deleteById("messages", messageId as string);
+
+      if (!item)
+        return res.status(500).json({ message: "Something went wrong" });
+
+      return res.status(200).json({ item });
+    }
+
+    if (method === "PUT") {
+      const item = await replaceById("messages", messageId as string, body);
+
+      if (!item)
+        return res.status(500).json({ message: "Something went wrong" });
+
+      return res.status(200).json({ item });
+    }
+
+    if (method === "PATCH") {
+      const item = await updateById("messages", messageId as string, body);
+
+      if (!item)
+        return res.status(500).json({ message: "Something went wrong" });
+
+      return res.status(200).json({ item });
+    }
+
+    res.status(405).json({ message: "Method not available" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Something went wrong" });
   }
-
-  if (method === "DELETE") {
-    const item = await deleteById("messages", messageId as string);
-
-    if (!item) return res.status(500).json({ message: "Something went wrong" });
-
-    return res.status(200).json({ item });
-  }
-
-  if (method === "PUT") {
-    const item = await replaceById("messages", messageId as string, body);
-
-    if (!item) return res.status(500).json({ message: "Something went wrong" });
-
-    return res.status(200).json({ item });
-  }
-
-  if (method === "PATCH") {
-    const item = await updateById("messages", messageId as string, body);
-
-    if (!item) return res.status(500).json({ message: "Something went wrong" });
-
-    return res.status(200).json({ item });
-  }
-
-  res.status(405).json({ message: "Method not available" });
 };
