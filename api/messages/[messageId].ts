@@ -1,4 +1,5 @@
 import { NowRequest, NowResponse } from "@vercel/node";
+import handleCors from "../../src/lib/cors";
 import {
   getItemById,
   deleteById,
@@ -6,10 +7,11 @@ import {
   updateById,
 } from "../../src/lib/fauna";
 
-export default async (
-  { method, query, body }: NowRequest,
-  res: NowResponse
-) => {
+export default async (req: NowRequest, res: NowResponse) => {
+  if (handleCors(req, res)) return;
+
+  const { method, query, body } = req;
+
   const { messageId } = query;
 
   if (method === "GET") {

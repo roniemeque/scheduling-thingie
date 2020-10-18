@@ -21,7 +21,7 @@ const transformFaunaResult = ({
   ts,
   data,
 }: FaunaItem): FaunaMappedItem => ({
-  id: ref?.value?.id,
+  id: ref && ref.value && ref.value.id,
   ts,
   ...data,
 });
@@ -37,7 +37,7 @@ export const allItemsByIndex = async (
       )
     );
 
-    return data?.map((item: FaunaItem) => transformFaunaResult(item));
+    return data && data.map((item: FaunaItem) => transformFaunaResult(item));
   } catch (error) {
     console.error(error);
     return null;
